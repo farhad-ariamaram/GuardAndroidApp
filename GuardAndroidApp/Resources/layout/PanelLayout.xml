@@ -13,6 +13,12 @@
         android:layout_margin="25px"
         android:height="100px"
         android:textSize="40px" />
+    <Button
+        android:text="خروج"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="25px"
+        android:id="@+id/logoutBTN" />
     <TextView
         android:text="Small Text"
         android:textAppearance="?android:attr/textAppearanceSmall"

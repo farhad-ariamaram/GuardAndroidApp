@@ -26,6 +26,11 @@ namespace GuardAndroidApp
 
             SetContentView(Resource.Layout.LoginLayout);
 
+            if (_db.GetLogin() != null)
+            {
+                StartActivity(typeof(PanelActivity));
+            }
+
             _db = new DbContext();
             loginButton = FindViewById<Button>(Resource.Id.loginBTN);
             usernameET = FindViewById<EditText>(Resource.Id.usernameET);
@@ -43,12 +48,18 @@ namespace GuardAndroidApp
                 if (string.IsNullOrEmpty(result.id))
                 {
                     var resultLocal = _db.LocalLogin(usernameET.Text, passwordET.Text);
-                    if(resultLocal == null)
+                    if (resultLocal == null)
                     {
                         Toast.MakeText(Application.Context, "نام کاربری یا کلمه عبور اشتباه است", ToastLength.Long).Show();
                     }
                     else
                     {
+                        _db.AddLogin(new Login
+                        {
+                            Id = resultLocal.Id,
+                            Name = resultLocal.Name,
+                            Username = resultLocal.Username
+                        });
                         StartActivity(typeof(PanelActivity));
                     }
                 }
@@ -63,6 +74,14 @@ namespace GuardAndroidApp
                         Username = usernameET.Text,
                         UserTypeId = 1
                     });
+
+                    _db.AddLogin(new Login
+                    {
+                        Id = int.Parse(result.id),
+                        Name = result.name,
+                        Username = usernameET.Text
+                    });
+
                     StartActivity(typeof(PanelActivity));
                 }
             }
@@ -75,6 +94,12 @@ namespace GuardAndroidApp
                 }
                 else
                 {
+                    _db.AddLogin(new Login
+                    {
+                        Id = resultLocal.Id,
+                        Name = resultLocal.Name,
+                        Username = resultLocal.Username
+                    });
                     StartActivity(typeof(PanelActivity));
                 }
             }

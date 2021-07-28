@@ -25,7 +25,39 @@ namespace GuardAndroidApp.Models
             _db.CreateTable<Climate>();
             _db.CreateTable<LocationDetail>();
             _db.CreateTable<SubmittedLocationDtl>();
+            _db.CreateTable<Login>();
         }
+
+        #region Login
+        public bool AddLogin(Login login)
+        {
+            var logins = _db.Table<User>().ToList();
+            if (logins.Any())
+            {
+                return false;
+            }
+            else
+            {
+                _db.Insert(login);
+                return true;
+            }
+        }
+
+        public void ClearLogin()
+        {
+            var loginList = _db.Table<Login>().ToList();
+            foreach (var item in loginList)
+            {
+                _db.Delete(item);
+            }
+        }
+
+        public Login GetLogin()
+        {
+            return _db.Table<Login>().FirstOrDefault();
+        }
+
+        #endregion
 
         #region User
         public void InsertUser(User user)
@@ -203,7 +235,7 @@ namespace GuardAndroidApp.Models
             _db.Update(locDetail);
         }
 
-        public LocationDetail GetLocationDetailById (long id)
+        public LocationDetail GetLocationDetailById(long id)
         {
             return _db.Table<LocationDetail>().FirstOrDefault(a => a.Id == id);
         }

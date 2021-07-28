@@ -16,18 +16,24 @@ namespace GuardAndroidApp
     public class PanelActivity : Activity
     {
         DbContext _db;
-        Button patrolButton;
+        Button patrolButton, logoutButton;
         protected async override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
 
             SetContentView(Resource.Layout.PanelLayout);
 
+            if (_db.GetLogin() == null)
+            {
+                StartActivity(typeof(LoginActivity));
+            }
+
             _db = new DbContext();
             patrolButton = FindViewById<Button>(Resource.Id.patrolBTN);
+            logoutButton = FindViewById<Button>(Resource.Id.logoutBTN);
 
             patrolButton.Click += PatrolButton_Click;
-
+            logoutButton.Click += LogoutButton_Click;
 
             //0000000000000000000000000000test
 
@@ -74,6 +80,12 @@ namespace GuardAndroidApp
             //    UserId = 199
             //});
             //test
+        }
+
+        private void LogoutButton_Click(object sender, EventArgs e)
+        {
+            _db.ClearLogin();
+            StartActivity(typeof(LoginActivity));
         }
 
         private void PatrolButton_Click(object sender, EventArgs e)

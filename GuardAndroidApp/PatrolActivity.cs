@@ -31,6 +31,11 @@ namespace GuardAndroidApp
 
             SetContentView(Resource.Layout.PatrolLayout);
 
+            if (_db.GetLogin() == null)
+            {
+                StartActivity(typeof(LoginActivity));
+            }
+
             //prefs = PreferenceManager.GetDefaultSharedPreferences(this);
             scanButton = FindViewById<Button>(Resource.Id.ScanButton);
             _db = new DbContext();
@@ -94,7 +99,7 @@ namespace GuardAndroidApp
                         DeviceId = 1,
                         IsSync = false,
                         LocationId = locId,
-                        UserId = 199
+                        UserId = _db.GetLogin().Id
                         //UserID = Int64.Parse(prefs.GetString("uid", null)),
                     };
 

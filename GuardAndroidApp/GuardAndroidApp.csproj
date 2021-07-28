@@ -78,6 +78,7 @@
     <Compile Include="Models\Check.cs" />
     <Compile Include="Models\Climate.cs" />
     <Compile Include="Models\LocationDetail.cs" />
+    <Compile Include="Models\Login.cs" />
     <Compile Include="Models\SubmittedLocation.cs" />
     <Compile Include="Models\DbContext.cs" />
     <Compile Include="Models\Location.cs" />

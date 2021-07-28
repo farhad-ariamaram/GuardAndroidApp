@@ -34,6 +34,11 @@ namespace GuardAndroidApp
 
             SetContentView(Resource.Layout.LocationDetailLayout);
 
+            if (_db.GetLogin() == null)
+            {
+                StartActivity(typeof(LoginActivity));
+            }
+
             if (Intent.HasExtra("LocationId") && Intent.HasExtra("SubmittedLocationId"))
             {
                 LocationId = Intent.GetLongExtra("LocationId", 0);
