@@ -26,12 +26,15 @@ namespace GuardAndroidApp
 
             SetContentView(Resource.Layout.LoginLayout);
 
-            if (_db.GetLogin() != null)
+            _db = new DbContext();
+
+            var login = _db.GetLogin();
+
+            if (login != null)
             {
                 StartActivity(typeof(PanelActivity));
             }
 
-            _db = new DbContext();
             loginButton = FindViewById<Button>(Resource.Id.loginBTN);
             usernameET = FindViewById<EditText>(Resource.Id.usernameET);
             passwordET = FindViewById<EditText>(Resource.Id.passwordET);
@@ -85,7 +88,7 @@ namespace GuardAndroidApp
                     StartActivity(typeof(PanelActivity));
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 var resultLocal = _db.LocalLogin(usernameET.Text, passwordET.Text);
                 if (resultLocal == null)

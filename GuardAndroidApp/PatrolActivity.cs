@@ -15,11 +15,10 @@ using ZXing.Mobile;
 
 namespace GuardAndroidApp
 {
-    [Activity(Label = "گشت زنی", Theme = "@android:style/Theme.Material.Light")]
+    [Activity(Label = "گشت زنی", Theme = "@android:style/Theme.Material.Light", NoHistory = true)]
     public class PatrolActivity : Activity
     {
         Button scanButton;
-        //ISharedPreferences prefs;
         ListView plansLV;
         DbContext _db;
         List<Plan> currentPlanningList = null;
@@ -31,14 +30,15 @@ namespace GuardAndroidApp
 
             SetContentView(Resource.Layout.PatrolLayout);
 
+            _db = new DbContext();
+
             if (_db.GetLogin() == null)
             {
                 StartActivity(typeof(LoginActivity));
             }
 
-            //prefs = PreferenceManager.GetDefaultSharedPreferences(this);
             scanButton = FindViewById<Button>(Resource.Id.ScanButton);
-            _db = new DbContext();
+            
 
             scanButton.Click += ScanButton_Click;
 
@@ -100,7 +100,6 @@ namespace GuardAndroidApp
                         IsSync = false,
                         LocationId = locId,
                         UserId = _db.GetLogin().Id
-                        //UserID = Int64.Parse(prefs.GetString("uid", null)),
                     };
 
                     _db.InsertSubmittedLocation(subloc);

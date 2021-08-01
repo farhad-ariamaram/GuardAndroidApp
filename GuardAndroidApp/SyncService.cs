@@ -68,18 +68,24 @@ namespace GuardAndroidApp
                         }
                     }
 
+                    await Task.Delay(1000);
+
                     var allAsyncSubLocDtls = _db.SubmittedLocationDtlsList().Where(a => !a.IsSync).ToList();
                     foreach (var item in allAsyncSubLocDtls)
                     {
-                        var res = await ApiRepository.postSubmittedLocationDtls(item);
-                        if (res)
+                        if (_db.StatusById(item.SubmittedLocationId))
                         {
-                            _db.SubmittedLocationDtlIsSyncTrue(item);
+                            var res = await ApiRepository.postSubmittedLocationDtls(item);
+                            if (res)
+                            {
+                                _db.SubmittedLocationDtlIsSyncTrue(item);
+                            }
+                            else
+                            {
+                                //Toast.MakeText(Application.Context, "مشکل در همگام سازی با سرور", ToastLength.Long).Show();
+                            }
                         }
-                        else
-                        {
-                            //Toast.MakeText(Application.Context, "مشکل در همگام سازی با سرور", ToastLength.Long).Show();
-                        }
+
                     }
                 }
             }

@@ -19,7 +19,6 @@ namespace GuardAndroidApp
 
             SetContentView(Resource.Layout.SplashLayout);
 
-
             _db = new DbContext();
 
             var sync = await SyncStatic();
@@ -31,7 +30,9 @@ namespace GuardAndroidApp
             var intent = new Intent(this, typeof(SyncService));
             StartService(intent);
 
-            if (_db.GetLogin() == null)
+            var login = _db.GetLogin();
+
+            if (login == null)
             {
                 StartActivity(typeof(LoginActivity));
             }

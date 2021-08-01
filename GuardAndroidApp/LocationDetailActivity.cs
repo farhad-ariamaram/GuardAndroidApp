@@ -34,6 +34,8 @@ namespace GuardAndroidApp
 
             SetContentView(Resource.Layout.LocationDetailLayout);
 
+            _db = new DbContext();
+
             if (_db.GetLogin() == null)
             {
                 StartActivity(typeof(LoginActivity));
@@ -55,7 +57,6 @@ namespace GuardAndroidApp
             }
 
             LocationDetailList = FindViewById<ListView>(Resource.Id.LocationDetailList);
-            _db = new DbContext();
             backButton = FindViewById<Button>(Resource.Id.backButton);
             
 

@@ -29,18 +29,9 @@ namespace GuardAndroidApp.Models
         }
 
         #region Login
-        public bool AddLogin(Login login)
+        public void AddLogin(Login login)
         {
-            var logins = _db.Table<User>().ToList();
-            if (logins.Any())
-            {
-                return false;
-            }
-            else
-            {
-                _db.Insert(login);
-                return true;
-            }
+            _db.Insert(login);
         }
 
         public void ClearLogin()
@@ -142,6 +133,11 @@ namespace GuardAndroidApp.Models
         {
             SubmittedLocation.IsSync = true;
             _db.Update(SubmittedLocation);
+        }
+
+        public bool StatusById(long id)
+        {
+           return _db.Table<SubmittedLocation>().FirstOrDefault(a => a.Id == id).IsSync;
         }
         #endregion
 

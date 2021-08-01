@@ -12,7 +12,7 @@ using System.Text;
 
 namespace GuardAndroidApp
 {
-    [Activity(Label = "پنل کاربری", Theme = "@android:style/Theme.Material.Light")]
+    [Activity(Label = "پنل کاربری", Theme = "@android:style/Theme.Material.Light", NoHistory = true)]
     public class PanelActivity : Activity
     {
         DbContext _db;
@@ -23,12 +23,15 @@ namespace GuardAndroidApp
 
             SetContentView(Resource.Layout.PanelLayout);
 
-            if (_db.GetLogin() == null)
+            _db = new DbContext();
+
+            var login = _db.GetLogin();
+
+            if (login == null)
             {
                 StartActivity(typeof(LoginActivity));
             }
 
-            _db = new DbContext();
             patrolButton = FindViewById<Button>(Resource.Id.patrolBTN);
             logoutButton = FindViewById<Button>(Resource.Id.logoutBTN);
 
