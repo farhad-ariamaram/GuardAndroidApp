@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using GuardAndroidApp.Utilities;
 using System.Threading.Tasks;
+using System;
 
 namespace GuardAndroidApp.Models
 {
@@ -26,7 +27,22 @@ namespace GuardAndroidApp.Models
             _db.CreateTable<LocationDetail>();
             _db.CreateTable<SubmittedLocationDtl>();
             _db.CreateTable<Login>();
+            _db.CreateTable<AttendanceDetail>();
         }
+
+        #region AttendanceDetail
+
+        public void InsertAttendanceDetail(AttendanceDetail attendanceDetail)
+        {
+            _db.Insert(attendanceDetail);
+        }
+
+        public List<AttendanceDetail> GetAttendanceDetails(DateTime dateTime, long uid)
+        {
+            return _db.Table<AttendanceDetail>().Where(a => a.GuardId == uid && a.Date == dateTime).ToList();
+        }
+
+        #endregion
 
         #region Login
         public void AddLogin(Login login)
@@ -137,7 +153,7 @@ namespace GuardAndroidApp.Models
 
         public bool StatusById(long id)
         {
-           return _db.Table<SubmittedLocation>().FirstOrDefault(a => a.Id == id).IsSync;
+            return _db.Table<SubmittedLocation>().FirstOrDefault(a => a.Id == id).IsSync;
         }
         #endregion
 

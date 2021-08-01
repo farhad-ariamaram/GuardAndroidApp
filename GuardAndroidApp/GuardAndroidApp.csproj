@@ -65,6 +65,7 @@
     <Compile Include="Adapters\LocationDetailAdapter.cs" />
     <Compile Include="Adapters\PlanAdapter.cs" />
     <Compile Include="Api\ApiRepository.cs" />
+    <Compile Include="Api\Models\AttendanceDetail.cs" />
     <Compile Include="Api\Models\Check.cs" />
     <Compile Include="Api\Models\Climate.cs" />
     <Compile Include="Api\Models\Location.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="Api\Models\User.cs" />
     <Compile Include="LocationDetailActivity.cs" />
     <Compile Include="LoginActivity.cs" />
+    <Compile Include="Models\AttendanceDetail.cs" />
     <Compile Include="Models\Check.cs" />
     <Compile Include="Models\Climate.cs" />
     <Compile Include="Models\LocationDetail.cs" />

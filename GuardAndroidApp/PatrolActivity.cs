@@ -5,6 +5,7 @@ using Android.OS;
 using Android.Preferences;
 using Android.Widget;
 using GuardAndroidApp.Adapters;
+using GuardAndroidApp.Api;
 using GuardAndroidApp.Models;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,7 @@ namespace GuardAndroidApp
         List<Plan> currentPlanningList = null;
         Timer timer;
 
-        protected override void OnCreate(Bundle savedInstanceState)
+        protected async override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
 
@@ -38,11 +39,48 @@ namespace GuardAndroidApp
             }
 
             scanButton = FindViewById<Button>(Resource.Id.ScanButton);
-            
 
             scanButton.Click += ScanButton_Click;
 
+            //get guard id
+            var guardId = _db.GetLogin().Id;
+
+            //get datetime
+            var datetime = DateTime.Now;
+
+            //GetAttendanceDetails(date,uid) if was empty get from api
+            var att = _db.GetAttendanceDetails(datetime, guardId);
+            if (att.Count < 1)
+            {
+                try
+                {
+                    var attapi = await ApiRepository.getAttendant(guardId, datetime);
+                    foreach (var item in attapi)
+                    {
+                        _db.InsertAttendanceDetail(new AttendanceDetail
+                        {
+                            Id=item.Id,
+                            Date = item.Date,
+                            EndDate = item.EndDate,
+                            StartDate = item.StartDate,
+                            GuardId = item.GuardId,
+                            Leave = item.Leave
+                        });
+                    }
+                }
+                catch (Exception)
+                {
+                    Toast.MakeText(Application.Context, "مشکل در دریافت شیفت کاری نگهبان از سرور", ToastLength.Long).Show();
+                }
+
+            }
+
+
+            ///////////////*******************مانده******************///////////////////////////////////
+            //filter currentPlanningList based on AttendanceDetails
             currentPlanningList = _db.GetPlansList();
+            ///////////////*******************مانده******************///////////////////////////////////
+
 
             if (currentPlanningList.Any())
             {

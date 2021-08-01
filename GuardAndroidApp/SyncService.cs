@@ -50,6 +50,7 @@ namespace GuardAndroidApp
 
         private async void Timer_Callback(object state)
         {
+
             try
             {
                 if (await IsConnect())
@@ -58,6 +59,7 @@ namespace GuardAndroidApp
                     foreach (var item in allAsyncSubLocs)
                     {
                         var res = await ApiRepository.postSubmittedLocations(item);
+
                         if (res)
                         {
                             _db.IsSyncTrue(item);

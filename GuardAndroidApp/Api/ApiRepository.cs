@@ -133,6 +133,22 @@ namespace GuardAndroidApp.Api
             }
         }
 
+        public async static Task<List<AttendanceDetail>> getAttendant(long uid, DateTime date)
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    string data = await client.GetStringAsync(Url + $"getAttendant?uid={uid}&datetime={date}");
+                    return JsonConvert.DeserializeObject<List<AttendanceDetail>>(data);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to connect API");
+            }
+        }
+
         public async static Task<bool> postSubmittedLocations(GuardAndroidApp.Models.SubmittedLocation submitted)
         {
             try
