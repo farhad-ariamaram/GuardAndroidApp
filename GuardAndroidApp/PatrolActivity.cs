@@ -8,6 +8,7 @@ using Android.Widget;
 using GuardAndroidApp.Adapters;
 using GuardAndroidApp.Api;
 using GuardAndroidApp.Models;
+using GuardAndroidApp.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,7 @@ using ZXing.Mobile;
 
 namespace GuardAndroidApp
 {
-    [Activity(Label = "گشت زنی", Theme = "@android:style/Theme.Material.Light", NoHistory = true)]
+    [Activity(Label = "گشت زنی", Theme = "@android:style/Theme.Material.Light",NoHistory =true)]
     [IntentFilter(new[] { NfcAdapter.ActionNdefDiscovered, NfcAdapter.ActionTagDiscovered, Intent.CategoryDefault })]
     public class PatrolActivity : Activity
     {
@@ -84,8 +85,8 @@ namespace GuardAndroidApp
 
             }
 
-            currentPlanningList = _db.GetPlansList().Where(a => a.UserId == guardId).OrderBy(a=>a.DateTime).ToList();
-            
+            currentPlanningList = _db.GetPlansList().Where(a => a.UserId == guardId).OrderBy(a => a.DateTime).ToList();
+
 
             foreach (var item in currentPlanningList)
             {
@@ -96,7 +97,7 @@ namespace GuardAndroidApp
                     {
                         flag = true;
                     }
-                    else if(item.DateTime >= item2.StartDate && item.DateTime <= item2.EndDate && item2.Leave == true)
+                    else if (item.DateTime >= item2.StartDate && item.DateTime <= item2.EndDate && item2.Leave == true)
                     {
                         flag = false;
                     }
@@ -107,7 +108,7 @@ namespace GuardAndroidApp
                 }
             }
 
-            
+
 
             if (filteredPlanningList.Any())
             {
@@ -134,13 +135,12 @@ namespace GuardAndroidApp
             if (_nfcAdapter == null)
             {
                 var alert = new Android.App.AlertDialog.Builder(this).Create();
-                alert.SetMessage("NFC is not supported on this device.");
-                alert.SetTitle("NFC Unavailable");
+                alert.SetMessage("دستگاه از ان اف سی پشتیبانی نمیکند.");
+                alert.SetTitle("خطا");
                 alert.Show();
             }
             else
             {
-                //Set events and filters
                 var tagDetected = new IntentFilter(NfcAdapter.ActionTagDiscovered);
                 var ndefDetected = new IntentFilter(NfcAdapter.ActionNdefDiscovered);
                 var techDetected = new IntentFilter(NfcAdapter.ActionTechDiscovered);
@@ -150,7 +150,6 @@ namespace GuardAndroidApp
 
                 var pendingIntent = PendingIntent.GetActivity(this, 0, intent, 0);
 
-                // Gives your current foreground activity priority in receiving NFC events over all other activities.
                 _nfcAdapter.EnableForegroundDispatch(this, pendingIntent, filters, null);
             }
         }
@@ -161,11 +160,11 @@ namespace GuardAndroidApp
             var myTag = (Tag)intent.GetParcelableExtra(NfcAdapter.ExtraTag);
             if (myTag == null) return;
             var tagIdBytes = myTag.GetId();
-            var tagIdString = ByteArrayToString(tagIdBytes); //Byte array converted to string
-            var reverseHex = LittleEndian(tagIdString); // Reversed hex converted to hex
-            var cardId = Convert.ToInt64(reverseHex, 16); //Convert to decimal decimal to get the final value
+            var tagIdString = ByteArrayToString(tagIdBytes);
+            var reverseHex = LittleEndian(tagIdString);
+            var cardId = Convert.ToInt64(reverseHex, 16);
             var alertMessage = new Android.App.AlertDialog.Builder(this).Create();
-            alertMessage.SetMessage("CardId:" + cardId); // Here's the id of card
+            alertMessage.SetMessage("CardId:" + cardId);
             alertMessage.Show();
             if (myTag != null)
             {
@@ -182,7 +181,7 @@ namespace GuardAndroidApp
                     };
 
                     _db.InsertSubmittedLocation(subloc);
-                    //playSound("submitBarcodeSuccess");
+                    Utils.playSound(this, "submitSuccuss");
 
                     Intent i = new Intent(this, typeof(LocationDetailActivity));
                     i.PutExtra("LocationId", locId);
@@ -192,7 +191,7 @@ namespace GuardAndroidApp
                 catch (Exception ex)
                 {
                     Toast.MakeText(Application.Context, "مشکل در ثبت بارکد", ToastLength.Long).Show();
-                    //playSound("submitBarcodeFailed");
+                    Utils.playSound(this, "submitFailed");
                 }
             }
 
@@ -204,7 +203,6 @@ namespace GuardAndroidApp
             //// Get NdefRecord which contains the actual data
             //var record = msg.GetRecords()[0];
             //if (record == null) return;
-            //// The data is defined by the Record Type Definition (RTD) specification available from http://members.nfc-forum.org/specs/spec_list/
             //if (record.Tnf != NdefRecord.TnfWellKnown) return;
             //// Get the transmitted data
             //var data = Encoding.ASCII.GetString(record.GetPayload());
@@ -262,37 +260,35 @@ namespace GuardAndroidApp
             {
                 try
                 {
-                    long locId = _db.GetIdFromQR(result.Text);
-                    SubmittedLocation subloc = new SubmittedLocation()
+                    var locId = _db.GetIdFromQR(result.Text);
+
+                    if (locId != null)
                     {
-                        DateTime = DateTime.Now,
-                        DeviceId = 1,
-                        IsSync = false,
-                        LocationId = locId,
-                        UserId = _db.GetLogin().Id
-                    };
+                        SubmittedLocation subloc = new SubmittedLocation()
+                        {
+                            DateTime = DateTime.Now,
+                            DeviceId = 1,
+                            IsSync = false,
+                            LocationId = locId,
+                            UserId = _db.GetLogin().Id
+                        };
 
-                    _db.InsertSubmittedLocation(subloc);
-                    //playSound("submitBarcodeSuccess");
+                        _db.InsertSubmittedLocation(subloc);
+                        Utils.playSound(this, "submitSuccuss");
 
-                    Intent i = new Intent(this, typeof(LocationDetailActivity));
-                    i.PutExtra("LocationId", locId);
-                    i.PutExtra("SubmittedLocationId", subloc.Id);
-                    StartActivity(i);
+                        Intent i = new Intent(this, typeof(LocationDetailActivity));
+                        i.PutExtra("LocationId", locId);
+                        i.PutExtra("SubmittedLocationId", subloc.Id);
+                        StartActivity(i);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    Toast.MakeText(Application.Context, "مشکل در ثبت بارکد", ToastLength.Long).Show();
-                    //playSound("submitBarcodeFailed");
+                    Utils.playSound(this, "submitFailed");
+                    StartActivity(typeof(PatrolActivity));
                 }
             }
 
         }
-
-        //public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
-        //{
-        //    Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
-        //    base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
-        //}
     }
 }

@@ -4,6 +4,7 @@ using Android.OS;
 using Android.Widget;
 using GuardAndroidApp.Api;
 using GuardAndroidApp.Models;
+using GuardAndroidApp.Utilities;
 using System;
 using System.Threading.Tasks;
 
@@ -142,6 +143,7 @@ namespace GuardAndroidApp
                 }
                 else
                 {
+                    Utils.playSound(this, "checkNetwork");
                     return false;
                 }
             }

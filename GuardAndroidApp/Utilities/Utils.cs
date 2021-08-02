@@ -1,5 +1,6 @@
 ﻿using Android.App;
 using Android.Content;
+using Android.Media;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
@@ -15,6 +16,8 @@ namespace GuardAndroidApp.Utilities
 {
     public static class Utils
     {
+        public static MediaPlayer _player;
+
         public const string _SALT = "SALT";
 
         public static string sha512(string strToEncrypt)
@@ -92,6 +95,27 @@ namespace GuardAndroidApp.Utilities
                 return "شب";
             }
 
+        }
+
+        public static void playSound(Context context,string name)
+        {
+            switch (name)
+            {
+                case "submitSuccuss":
+                    _player = MediaPlayer.Create(context, Resource.Raw.submitSuccuss);
+                    _player.Start();
+                    break;
+                case "submitFailed":
+                    _player = MediaPlayer.Create(context, Resource.Raw.submitFailed);
+                    _player.Start();
+                    break;
+                case "checkNetwork":
+                    _player = MediaPlayer.Create(context, Resource.Raw.checkNetwork);
+                    _player.Start();
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

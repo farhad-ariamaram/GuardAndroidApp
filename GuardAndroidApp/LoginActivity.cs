@@ -6,6 +6,7 @@ using Android.Views;
 using Android.Widget;
 using GuardAndroidApp.Api;
 using GuardAndroidApp.Models;
+using GuardAndroidApp.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,6 +51,7 @@ namespace GuardAndroidApp
                 var result = await ApiRepository.RemoteLogin(usernameET.Text, passwordET.Text);
                 if (string.IsNullOrEmpty(result.id))
                 {
+                    Utils.playSound(this, "checkNetwork");
                     var resultLocal = _db.LocalLogin(usernameET.Text, passwordET.Text);
                     if (resultLocal == null)
                     {
@@ -90,6 +92,7 @@ namespace GuardAndroidApp
             }
             catch (Exception ex)
             {
+                Utils.playSound(this, "checkNetwork");
                 var resultLocal = _db.LocalLogin(usernameET.Text, passwordET.Text);
                 if (resultLocal == null)
                 {

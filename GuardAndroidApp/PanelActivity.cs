@@ -38,51 +38,6 @@ namespace GuardAndroidApp
             patrolButton.Click += PatrolButton_Click;
             logoutButton.Click += LogoutButton_Click;
 
-            //0000000000000000000000000000test
-
-            TextView tv = FindViewById<TextView>(Resource.Id.textView1);
-            var a = _db.GetPlansList();
-            var b = _db.GetLocationsList();
-            var c = _db.GetCheckList();
-            var d = _db.GetClimateList();
-            var e = _db.GetLocationDetailList();
-
-            foreach (var item in a)
-            {
-                tv.Text += $"plan:{item.DateTime}\n\r";
-            }
-
-            foreach (var item in b)
-            {
-                tv.Text += $"location:{item.Nfc}\n\r";
-            }
-
-            foreach (var item in c)
-            {
-                tv.Text += $"check:{item.Name}\n\r";
-            }
-
-            foreach (var item in d)
-            {
-                tv.Text += $"climate:{item.Name}\n\r";
-            }
-
-            foreach (var item in e)
-            {
-                tv.Text += $"locationList:{item.StartTime.Value.ToString(@"hh\:mm\:ss")}\n\r";
-            }
-
-
-
-            //await Api.ApiRepository.postSubmittedLocations(new SubmittedLocation
-            //{
-            //    DateTime = DateTime.Now,
-            //    DeviceId = 1,
-            //    IsSync = true,
-            //    LocationId = 20005,
-            //    UserId = 199
-            //});
-            //test
         }
 
         private void LogoutButton_Click(object sender, EventArgs e)
