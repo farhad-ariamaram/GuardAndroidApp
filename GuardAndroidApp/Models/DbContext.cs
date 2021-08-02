@@ -39,7 +39,8 @@ namespace GuardAndroidApp.Models
 
         public List<AttendanceDetail> GetAttendanceDetails(DateTime dateTime, long uid)
         {
-            return _db.Table<AttendanceDetail>().Where(a => a.GuardId == uid && a.Date == dateTime).ToList();
+            var dateTime2 = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0);
+            return _db.Table<AttendanceDetail>().Where(a => a.GuardId == uid && a.Date == dateTime2).ToList();
         }
 
         #endregion
@@ -112,6 +113,11 @@ namespace GuardAndroidApp.Models
         public long GetIdFromQR(string qr)
         {
             return _db.Table<Location>().SingleOrDefault(p => p.Qr == qr).Id;
+        }
+
+        public long GetIdFromNFC(string nfc)
+        {
+            return _db.Table<Location>().SingleOrDefault(p => p.Nfc == nfc).Id;
         }
 
         public void InsertLocation(Location location)

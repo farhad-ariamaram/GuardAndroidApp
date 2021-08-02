@@ -54,7 +54,7 @@ namespace GuardAndroidApp
 
             foreach (var item in b)
             {
-                tv.Text += $"location:{item.Name}\n\r";
+                tv.Text += $"location:{item.Nfc}\n\r";
             }
 
             foreach (var item in c)
