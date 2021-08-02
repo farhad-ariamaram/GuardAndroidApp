@@ -9,16 +9,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minWidth="25px"
-        android:minHeight="25px"
         android:id="@+id/patrolBTN"
-        android:layout_margin="25px"
-        android:height="100px"
+        android:layout_margin="15px"
         android:textSize="40px" />
     <Button
         android:text="خروج"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="25px"
-        android:id="@+id/logoutBTN" />
+        android:layout_margin="15px"
+        android:id="@+id/logoutBTN"
+        android:textSize="40px" />
 
 </LinearLayout>
