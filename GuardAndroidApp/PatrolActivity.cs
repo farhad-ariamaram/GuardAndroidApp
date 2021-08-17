@@ -161,16 +161,16 @@ namespace GuardAndroidApp
             if (myTag == null) return;
             var tagIdBytes = myTag.GetId();
             var tagIdString = ByteArrayToString(tagIdBytes);
-            var reverseHex = LittleEndian(tagIdString);
-            var cardId = Convert.ToInt64(reverseHex, 16);
+            //var reverseHex = LittleEndian(tagIdString);
+            //var cardId = Convert.ToInt64(tagIdString, 16);
             var alertMessage = new Android.App.AlertDialog.Builder(this).Create();
-            alertMessage.SetMessage("CardId:" + cardId);
+            alertMessage.SetMessage("CardId:" + tagIdString);
             alertMessage.Show();
             if (myTag != null)
             {
                 try
                 {
-                    long locId = _db.GetIdFromNFC(cardId + "");
+                    long locId = _db.GetIdFromNFC(tagIdString + "");
                     SubmittedLocation subloc = new SubmittedLocation()
                     {
                         DateTime = DateTime.Now,
@@ -212,7 +212,7 @@ namespace GuardAndroidApp
 
         private static string LittleEndian(string num)
         {
-            var number = Convert.ToInt32(num, 16);
+            var number = Convert.ToInt64(num, 16);
             var bytes = BitConverter.GetBytes(number);
             return bytes.Aggregate("", (current, b) => current + b.ToString("X2"));
         }
