@@ -156,21 +156,37 @@ namespace GuardAndroidApp
 
         protected override void OnNewIntent(Intent intent)
         {
-            if (intent.Action != NfcAdapter.ActionTagDiscovered) return;
-            var myTag = (Tag)intent.GetParcelableExtra(NfcAdapter.ExtraTag);
-            if (myTag == null) return;
-            var tagIdBytes = myTag.GetId();
-            var tagIdString = ByteArrayToString(tagIdBytes);
-            //var reverseHex = LittleEndian(tagIdString);
-            //var cardId = Convert.ToInt64(tagIdString, 16);
+            //if (intent.Action != NfcAdapter.ActionTagDiscovered) return;
+            //var myTag = (Tag)intent.GetParcelableExtra(NfcAdapter.ExtraTag);
+            //if (myTag == null) return;
+            //var tagIdBytes = myTag.GetId();
+            //var tagIdString = ByteArrayToString(tagIdBytes);
+            ////var reverseHex = LittleEndian(tagIdString);
+            ////var cardId = Convert.ToInt64(tagIdString, 16);
+
+            //// Extra: Check if there's any Ndef message
+            var rawMessages = intent.GetParcelableArrayExtra(NfcAdapter.ExtraNdefMessages);
+            if (rawMessages == null) return;
+            var msg = (NdefMessage)rawMessages[0];
+            // Get NdefRecord which contains the actual data
+            var record = msg.GetRecords()[0];
+            if (record == null) return;
+            if (record.Tnf != NdefRecord.TnfWellKnown) return;
+            // Get the transmitted data
+            var data = Encoding.ASCII.GetString(record.GetPayload());
+            if (data.Contains("en"))
+            {
+                data = data.Substring(3);
+            }
             var alertMessage = new Android.App.AlertDialog.Builder(this).Create();
-            alertMessage.SetMessage("CardId:" + tagIdString);
+            alertMessage.SetMessage(data);
             alertMessage.Show();
-            if (myTag != null)
+
+            if (data != null)
             {
                 try
                 {
-                    long locId = _db.GetIdFromNFC(tagIdString + "");
+                    long locId = _db.GetIdFromNFC(data + "");
                     SubmittedLocation subloc = new SubmittedLocation()
                     {
                         DateTime = DateTime.Now,
@@ -196,17 +212,7 @@ namespace GuardAndroidApp
             }
 
 
-            //// Extra: Check if there's any Ndef message
-            //var rawMessages = intent.GetParcelableArrayExtra(NfcAdapter.ExtraNdefMessages);
-            //if (rawMessages == null) return;
-            //var msg = (NdefMessage)rawMessages[0];
-            //// Get NdefRecord which contains the actual data
-            //var record = msg.GetRecords()[0];
-            //if (record == null) return;
-            //if (record.Tnf != NdefRecord.TnfWellKnown) return;
-            //// Get the transmitted data
-            //var data = Encoding.ASCII.GetString(record.GetPayload());
-            ////alertMessage.SetMessage("Data:" + data);
+
 
         }
 
