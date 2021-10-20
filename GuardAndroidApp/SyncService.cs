@@ -33,12 +33,24 @@ namespace GuardAndroidApp
             CreateNotificationChannel();
             string messageBody = "service starting";
 
-            var notification = new Notification.Builder(this, "10111")
-            .SetContentTitle("Foreground")
-            .SetContentText(messageBody)
-            .SetOngoing(true)
-            .Build();
-            StartForeground(SERVICE_RUNNING_NOTIFICATION_ID, notification);
+
+
+            if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.O)
+            {
+                //Android.App.Application.Context.StartForegroundService(intent);
+                var notification = new Notification.Builder(this, "10111")
+                .SetContentTitle("Foreground")
+                .SetContentText(messageBody)
+                .SetOngoing(true)
+                .Build();
+                StartForeground(SERVICE_RUNNING_NOTIFICATION_ID, notification);
+            }
+            else
+            {
+                Android.App.Application.Context.StartService(intent);
+            }
+
+
 
             var startTimeSpan = TimeSpan.Zero;
             var periodTimeSpan = TimeSpan.FromSeconds(60);
@@ -53,6 +65,7 @@ namespace GuardAndroidApp
 
             try
             {
+
                 if (await IsConnect())
                 {
                     var allAsyncSubLocs = _db.SubmittedLocationsList().Where(a => !a.IsSync).ToList();
@@ -84,7 +97,7 @@ namespace GuardAndroidApp
                             }
                             else
                             {
-                                //Toast.MakeText(Application.Context, "مشکل در همگام سازی با سرور", ToastLength.Long).Show();
+                                //Toast.MakeText(Application.Context, "تایمر", ToastLength.Long).Show();
                             }
                         }
 
@@ -95,7 +108,7 @@ namespace GuardAndroidApp
             {
                 //Toast.MakeText(Application.Context, "مشکل در همگام سازی با سرور", ToastLength.Long).Show();
             }
-            
+
         }
 
         void CreateNotificationChannel()

@@ -160,6 +160,9 @@ namespace GuardAndroidApp.Api
                         DateTime = submitted.DateTime,
                         DeviceId = submitted.DeviceId,
                         Id = submitted.Id,
+
+
+
                         LocationId = submitted.LocationId,
                         UserId = submitted.UserId
                     };

@@ -210,10 +210,6 @@ namespace GuardAndroidApp
                     Utils.playSound(this, "submitFailed");
                 }
             }
-
-
-
-
         }
 
         private static string LittleEndian(string num)
